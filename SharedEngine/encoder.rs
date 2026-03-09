@@ -4,13 +4,16 @@ fn main() {
     const TYPE: u8 = 1;
 
     let mut text = String::new();
+    
     std::io::stdin().read_line(&mut text).unwrap();
+    let text = text.trim().to_string();
     let mut frame: Vec<u8> = Vec::new(); 
 
     frame.extend_from_slice(&MAGIC);
     frame.push(VERSION);
     frame.push(TYPE);
-    frame.extend_from_slice(text.as_bytes());  // CORRIGÉ
+    frame.extend_from_slice(text.as_bytes());  
 
-    println!("{:?}", frame);  // CORRIGÉ
+    let hex_string: Vec<String> = frame.iter().map(|b| format!("{:02X}", b)).collect();
+    println!("{}", hex_string.join(" "));   
 }
