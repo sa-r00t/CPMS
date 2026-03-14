@@ -28,7 +28,7 @@ namespace Encodeur
 	/// <param name="input"> Input </param>
 	/// <param name="output"> Output </param>
 	/// <returns></returns>
-	ENCODEUR_API const std::string& Encode(const std::string& input);
+	ENCODEUR_API std::string Encode(const std::string& input);
 
 	/// <summary>
 	/// Dedodes the input string and stores the result in the output string.
@@ -44,7 +44,7 @@ namespace Encodeur
 	/// <param name="input"> Input </param>
 	/// <param name="output"> Output </param>
 	/// <returns></returns>
-	ENCODEUR_API const std::string& Decode(const std::string& input);
+	ENCODEUR_API std::string Decode(const std::string& input);
 }
 
 #define __ENCODEUR__
