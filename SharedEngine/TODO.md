@@ -1,24 +1,22 @@
 # Shared engine 
-
-
-# Core engine
-
-# 
-DLL encoder
-
-DLL decoder
-
 Rust example Encoder x
 
 Rust example Decoder x
 
-Rust implementable decoder/encoder scripts
+Rust implementable decoder/encoder scripts *a faire* 
+
+
+# Core engine
+
+
+
+# DLL
+
+DLL encoder *en dévéloppement*
+
+DLL decoder *a faire*
 
 
 
 
-# Mohamed:
 
-CPP example Encoder x
-
-CPP example Decoder
