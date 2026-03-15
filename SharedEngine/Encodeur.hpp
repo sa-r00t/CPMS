@@ -20,7 +20,7 @@ namespace Encodeur
 	/// <param name="input"> Input </param>
 	/// <param name="output"> Output </param>
 	/// <returns></returns>
-	ENCODEUR_API void Encode(const std::string& input, std::string& output);
+	ENCODEUR_API void Encode(const char* input, const size_t sizeof_input, std::string& output);
 
 	/// <summary>
 	/// Encodes the input string and stores the result in the output string.
@@ -28,7 +28,7 @@ namespace Encodeur
 	/// <param name="input"> Input </param>
 	/// <param name="output"> Output </param>
 	/// <returns></returns>
-	ENCODEUR_API std::string Encode(const std::string& input);
+	ENCODEUR_API std::string Encode(const char* input, const size_t sizeof_input);
 
 	/// <summary>
 	/// Dedodes the input string and stores the result in the output string.
@@ -36,7 +36,7 @@ namespace Encodeur
 	/// <param name="input"> Input </param>
 	/// <param name="output"> Output </param>
 	/// <returns></returns>
-	ENCODEUR_API void Decode(const std::string& input, std::string& output);
+	ENCODEUR_API void Decode(const char* input, const size_t sizeof_input, std::string& output);
 
 	/// <summary>
 	/// Decodes the input string and stores the result in the output string.
@@ -44,7 +44,7 @@ namespace Encodeur
 	/// <param name="input"> Input </param>
 	/// <param name="output"> Output </param>
 	/// <returns></returns>
-	ENCODEUR_API std::string Decode(const std::string& input);
+	ENCODEUR_API std::string Decode(const char* input, const size_t sizeof_input);
 }
 
 #define __ENCODEUR__
