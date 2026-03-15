@@ -5,9 +5,9 @@
 #define ENCODEUR_VERSION "1.0.0"
 
 #ifdef SHAREDENGINE_EXPORTS
-#define ENCODEUR_API __declspec(dllexport)
+#define ENCODEUR_API extern "C" __declspec(dllexport)
 #else
-#define ENCODEUR_API __declspec(dllimport)
+#define ENCODEUR_API extern "C" __declspec(dllimport)
 #endif
 
 #ifndef __ENCODEUR__
@@ -28,7 +28,7 @@ namespace Encodeur
 	/// <param name="input"> Input </param>
 	/// <param name="output"> Output </param>
 	/// <returns></returns>
-	ENCODEUR_API std::string Encode(const char* input, const size_t sizeof_input);
+	std::string Encode(const char* input, const size_t sizeof_input);
 
 	/// <summary>
 	/// Dedodes the input string and stores the result in the output string.
@@ -44,7 +44,7 @@ namespace Encodeur
 	/// <param name="input"> Input </param>
 	/// <param name="output"> Output </param>
 	/// <returns></returns>
-	ENCODEUR_API std::string Decode(const char* input, const size_t sizeof_input);
+	std::string Decode(const char* input, const size_t sizeof_input);
 }
 
 #define __ENCODEUR__
