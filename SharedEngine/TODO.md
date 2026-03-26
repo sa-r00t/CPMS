@@ -12,12 +12,6 @@ Rust implementable decoder/encoder scripts *a faire*
 
 # DLL
 
-DLL encoder *en dévéloppement*
-
-DLL decoder *a faire*
-
-# Update:
-
 il faut 3 grandes fonctions pour le dll 
 
 # La Fonction Encode
