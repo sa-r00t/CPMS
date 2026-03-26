@@ -42,4 +42,5 @@ on peut aller encore plus loin et voir si on peut pas transformer ça en crate r
 
 il nous restera a éxperimenter et determiner quelles couches du modéle osi es ce qu'on touche pour l'instant je pense qu'on touche la couche 5 ,6 , et 7 et le reste c automatique et c le tcp qui gére 
 
+et pour l'instant je sais pas vraiment encore comment proceder donc on vera
 
