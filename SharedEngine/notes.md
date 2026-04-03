@@ -13,6 +13,11 @@ une fois notre dll avec les 3 fonctions principales faites on pourra ajouter le 
 
 Il faut absolument que les fonctions exposent en c comme ça on peut utiliser le dll avec rust et cpp jcrois sa s'apelle extern c ou jsp quoi 
 
+
+créer une sorte d'usine qui gere la creation et la supression de variable , par exemple la fonction encode quand elle a besoin de créer une variable elle apelle cette usine et dès que le free buffer est appelé elle rapelle cette usine  
+
+tout cela pour que la variable ne sorte JAMAIS du dll 
+
 ---------------------------------------------------------
 WRAPPER:
 
@@ -30,7 +35,3 @@ pour ce faire il faudra implementer la methode d'envoi par tcp sur le wrapper qu
 
 
 
-
-créer une sorte d'usine qui gere la creation et la supression de variable , par exemple la fonction encode quand elle a besoin de créer une variable elle apelle cette usine et dès que le free buffer est appelé elle rapelle cette usine  
-
-tout cela pour que la variable ne sorte JAMAIS du dll 
