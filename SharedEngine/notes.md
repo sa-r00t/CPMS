@@ -25,3 +25,12 @@ quand on aura fini le dll de la V1 on pourra s'attauqer au network on fera des s
 
 pour ce faire il faudra implementer la methode d'envoi par tcp sur le wrapper qui se chargera d'envoyer la data a une machine donnée
 
+
+
+
+
+
+
+créer une sorte d'usine qui gere la creation et la supression de variable , par exemple la fonction encode quand elle a besoin de créer une variable elle apelle cette usine et dès que le free buffer est appelé elle rapelle cette usine  
+
+tout cela pour que la variable ne sorte JAMAIS du dll 
