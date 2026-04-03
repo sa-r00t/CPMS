@@ -11,6 +11,8 @@ une fois notre dll avec les 3 fonctions principales faites on pourra ajouter le 
 <img width="1665" height="860" alt="image" src="https://github.com/user-attachments/assets/0ea4f2ce-893b-4328-a843-ea2234deab0d" />
 
 
+Il faut absolument que les fonctions exposent en c comme ça on peut utiliser le dll avec rust et cpp jcrois sa s'apelle extern c ou jsp quoi 
+
 ---------------------------------------------------------
 WRAPPER:
 
