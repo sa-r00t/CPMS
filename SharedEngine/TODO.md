@@ -28,9 +28,13 @@ fonction qui vien liberer la ram et la nettoyer pour éviter un memory leak
 
 
 
+
+faire en sorte que le decode soit utilisable avec un truc du genre decoded.magic,decoded.type,decoded.payload etc etc
+
+
 # Wrapper
 
-pour nous faciliter la tache quand on iplémente le programme il faut qu'on fasse un Wrapper qui va faire le sale boulot a notre place et va servir de middleman entre le programme ou on implémente cpms et le dll on pourra juste faire encode(contenu) decode(contenu) a notre guise et méme le free-buffer sa sera géré par le wrapper donc sa va étre trés trés facile d'utilisation
+pour nous faciliter la tache quand on implémente le programme il faut qu'on fasse un Wrapper qui va faire le sale boulot a notre place et va servir de middleman entre le programme ou on implémente cpms et le dll on pourra juste faire encode(contenu) decode(contenu) a notre guise et méme le free-buffer sa sera géré par le wrapper donc sa va étre trés trés facile d'utilisation
 
 
 on peut aller encore plus loin et voir si on peut pas transformer ça en crate rust ou libraire cpp ou module python pour rendre le tout trés compact et facile a intégrer
