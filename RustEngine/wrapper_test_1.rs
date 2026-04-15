@@ -3,14 +3,14 @@ use std::os::raw::c_char;
 
 use libloading::{Library, Symbol};
 
-
+//make data struct
 #[repr(C)]
 pub struct Data {
     pub size: u64,
     pub ptr: *mut std::ffi::c_void,
 }
 
-
+//define dll functions
 type EncodeFn =
     unsafe extern "C" fn(*const c_char, usize) -> Data;
 
@@ -21,7 +21,7 @@ type FreeBufferFn =
     unsafe extern "C" fn(*mut c_void);
 
 
-
+//encode function handling from dll
 pub fn encode(content: &str) -> Data {
 
     let lib = unsafe {
@@ -33,7 +33,7 @@ pub fn encode(content: &str) -> Data {
 
         let encode: Symbol<EncodeFn> =
             lib.get(b"Encode")
-            .expect("Encode Not Found");
+            .expect("ENCODE NOT FOUND");
 
 
         let c_text =
@@ -45,7 +45,7 @@ pub fn encode(content: &str) -> Data {
 }
 
 
-
+//decode function handling from dll
 pub fn decode(data: Data) -> String {
 
     let lib = unsafe {
