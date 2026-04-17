@@ -41,6 +41,8 @@ pub fn encode(content: &str) -> Data {
 
 
         encode(c_text.as_ptr(), content.len())
+
+        // memory leak ici vu qu'on free pas le buffer (réglé dans la deuxieme version du test)
     }
 }
 
