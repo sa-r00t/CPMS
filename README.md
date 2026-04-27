@@ -26,7 +26,7 @@ The protocol is not a monolithic library. It is a **lightweight frame format** c
 
 JCS32 is our **custom integrity algorithm**, designed specifically for CPMS.
 
-It takes the input data, runs it through a chaotic propagation loop over 64 bits, compresses the result, applies a bit‑permutation step, and expands it to 8 bytes.
+It takes the input data, runs it through a chaotic propagation loop over 64 bits, compresses the result, applies a bit‑permutation step, and expands it to **8 bytes**.
 
 **No CRC. No standard. Just our own math.**
 
@@ -98,6 +98,67 @@ This allows the same protocol to run in high‑level applications (Rust GUI, CLI
 
 ---
 
+## Current Status
+
+### V1 (Legacy Frame) – COMPLETE ✅
+
+- Frame format: `["MS" 2b][Version 1b][Type 1b][Payload Xb]`
+- Basic encode/decode in C++ DLL
+- Rust wrapper using FFI (`libloading`)
+- Cross‑language communication validated (Rust ↔ C++)
+
+### V1 Wrapper (Rust) – COMPLETE ✅
+
+- `encode()` returns `Vec<u8>`
+- `decode(&[u8])` returns `Result<String>`
+- Memory management via `free_buffer()`
+- Early error handling with `Result` type
+
+### JCS32 – IN PROGRESS 🚧
+
+- Algorithm implemented in C++ DLL
+- Returns an 8‑byte checksum
+- Integration with V2 frame pending
+- Rust wrapper update planned
+
+### V2 Frame – IN PROGRESS 🚧
+
+**New format (V2):**
+
+["CPMS" 4b][Version 1b][Type 1b][Length 4b][Payload Xb][Checksum 8b]
+
+
+| Field     | Size  | Description                          |
+|-----------|-------|--------------------------------------|
+| MAGIC     | 4b    | Fixed signature "CPMS"               |
+| VERSION   | 1b    | Protocol version (0x02 for V2)       |
+| TYPE      | 1b    | Message type (1=Text, 2=File, ...)   |
+| LENGTH    | 4b    | Size of the payload in bytes         |
+| PAYLOAD   | Xb    | Actual data (text, file chunk, etc.) |
+| CHECKSUM  | 8b    | Integrity check (JCS32)              |
+
+**V2 frame diagram:**
+
+<img width="1781" height="367" alt="image" src="images/diagrame_trame_v2.png" />
+
+
+**Key improvements over V1:**
+
+- Magic extended to 4 bytes: `"CPMS"`
+- Explicit `Length` field – no more payload ambiguity
+- `Checksum` extended to 8 bytes – stronger integrity
+- Version field ready for future extensions
+
+### Next Steps
+
+1. Update C++ DLL to support V2 frame (encode/decode with Length + Checksum 8b)
+2. Update Rust wrapper to handle V2 (parse new fields, validate JCS32)
+3. Cross‑language test (C++ encode → Rust decode, and reverse)
+4. Simple TCP client/server using the V2 wrapper
+5. End‑to‑end chat over local network
+
+---
+
 ## Philosophy
 
 One sentence. One belief.
@@ -116,37 +177,37 @@ CPMS is not a product. It is a foundation.
 ## CPMS
 
 **CPMS** signifie **"Protocole de Communication Mohamed Seif"**.
-Il s’agit d’un protocole de communication modulaire, orienté confidentialité, conçu pour donner à l’utilisateur un contrôle total sur ses échanges de données et son trafic réseau.
+Il s'agit d'un protocole de communication modulaire, orienté confidentialité, conçu pour donner aux utilisateurs un contrôle total sur leurs flux de données et leurs échanges réseau.
 
-Contrairement aux protocoles traditionnels qui imposent des structures rigides et font confiance à la couche transport, CPMS est construit de A à Z pour être **indépendant de l’implémentation** (compatible Rust, C++, et tout langage pouvant appeler une interface C) et **indépendant du transport** (fonctionne sur TCP, UDP, liaison série, LoRa, Bluetooth, ou même radio personnalisée).
+Contrairement aux protocoles traditionnels qui imposent des structures rigides et font confiance à la couche de transport sous-jacente, CPMS est construit de A à Z pour être **indépendant de l'implémentation** (compatible avec Rust, C++ et tout langage capable d'appeler une interface C) et **indépendant du transport** (fonctionne sur TCP, UDP, liaisons série, LoRa, Bluetooth, ou même une radio personnalisée).
 
-Le protocole n’est pas une bibliothèque monolithique. C’est un **format de trame léger** associé à une **DLL partagée** qui contient toutes les opérations essentielles : construction de trame, analyse, vérification d’intégrité et obfuscation optionnelle.
+Le protocole n'est pas une bibliothèque monolithique. C'est un **format de trame léger** combiné à une **DLL partagée** qui contient toutes les opérations de base : construction de trame, analyse, vérification d'intégrité et obfuscation optionnelle.
 
 ---
 
 ## Fonctionnalités principales
 
 - **En‑tête de taille fixe** (20 octets) – MAGIC, VERSION, TYPE, LENGTH, TIMESTAMP.
-- **Charge utile variable** – pour transporter n’importe quoi : texte, binaire, données chiffrées, fragments de fichiers.
-- **Somme de contrôle JCS32** – notre propre algorithme d’intégrité, pas un CRC standard.
+- **Charge utile variable** – transporte n'importe quoi : texte, binaire, données chiffrées, fragments de fichiers.
+- **Somme de contrôle JCS32** – notre propre algorithme d'intégrité, pas un CRC standard.
 - **Architecture basée sur une DLL** – logique partagée entre différents langages et plateformes.
-- **Conception modulaire** – ajout de chiffrement, d’authentification ou de drapeaux personnalisés sans casser la structure de la trame.
-- **Prêt pour les liaisons bas débit / longue distance** – LoRa, modems radio, satellite.
+- **Conception modulaire** – ajoutez du chiffrement, de l'authentification ou des drapeaux personnalisés sans casser la structure de la trame.
+- **Prêt pour les faibles débits / longue distance** – LoRa, modems radio, satellite.
 
 ---
 
 ## JCS32 – Joint Checksum Standard 32
 
-JCS32 est notre **algorithme d’intégrité sur mesure**, spécifiquement conçu pour CPMS.
+JCS32 est notre **algorithme d'intégrité sur mesure**, conçu spécifiquement pour CPMS.
 
-Il prend les données d’entrée, leur applique une boucle de propagation chaotique sur 64 bits, compresse le résultat, applique une permutation de bits, et l’étend à 8 octets.
+Il prend les données d'entrée, les fait passer dans une boucle de propagation chaotique sur 64 bits, compresse le résultat, applique une étape de permutation de bits et l'étend à **8 octets**.
 
-**Pas de CRC. Pas de standard. Juste nos propres calculs.**
+**Pas de CRC. Pas de standard. Rien que nos propres maths.**
 
 Cela garantit :
-- Une probabilité extrêmement faible que deux entrées différentes produisent la même somme de contrôle.
-- Aucune dépendance externe (zlib, etc.).
-- L’algorithme reste entièrement sous notre contrôle.
+- Que deux entrées différentes aient une probabilité extrêmement faible de produire la même somme de contrôle.
+- Qu'aucune dépendance externe (zlib, etc.) ne soit requise.
+- Que l'algorithme reste entièrement sous notre contrôle.
 
 > ⚠️ Le tampon retourné par la fonction JCS32 est alloué dynamiquement.
 > Il doit être libéré avec `FreeBuffer()` après utilisation.
@@ -158,44 +219,44 @@ Cela garantit :
 La plupart des protocoles existants font des hypothèses sur le réseau, le transport ou le format des données.  
 CPMS, non.
 
-Tu décides :
+Vous décidez :
 - Ce qui fonctionne au‑dessus (chat, transfert de fichiers, commande & contrôle, télémétrie).
 - Ce qui fonctionne en dessous (TCP, UDP, radio, série).
-- Qui peut lire la charge utile (le chiffrement est ton choix, pas imposé).
-- Comment l’intégrité est vérifiée (JCS32 est le nôtre, mais tu peux en ajouter d’autres).
+- Qui peut lire la charge utile (le chiffrement est votre choix, pas imposé).
+- Comment l'intégrité est vérifiée (JCS32 est le nôtre, mais vous pouvez en ajouter d'autres).
 
-**Tes données, tes règles. Ton réseau, ton format.**
+**Vos données, vos règles. Votre réseau, votre format.**
 
 ---
 
-## Workflow / Comment ça marche
+## Workflow / Comment ça fonctionne
 
-CPMS repose sur une **DLL partagée** écrite en C++. Cette DLL contient toute la logique centrale : encodage, décodage des trames, calcul de la somme JCS32, et obfuscation optionnelle.
+CPMS est construit autour d'une **DLL partagée** écrite en C++. Cette DLL contient toute la logique centrale : encodage, décodage des trames, calcul de la somme de contrôle JCS32 et obfuscation optionnelle.
 
-Au‑dessus de cette DLL, un **wrapper Rust** charge la DLL au moment de l’exécution via FFI (`libloading` sous Windows, `dlopen` sous Unix). Le wrapper expose des fonctions simples et sécurisées à l’application Rust : `encode()`, `decode()`, `free_buffer()`.
+Au‑dessus de cette DLL, nous fournissons un **wrapper Rust** qui charge la DLL à l'exécution via FFI (`libloading` sous Windows / `dlopen` sous Unix). Le wrapper expose des fonctions simples et sûres à l'application Rust : `encode()`, `decode()`, `free_buffer()`.
 
 ### Étape par étape (encodage)
 
-1. L’application Rust appelle `encode("hello")`.
+1. L'application Rust appelle `encode("hello")`.
 2. Le wrapper convertit la chaîne en un format compatible C (`CString`).
-3. Le wrapper appelle la fonction `Encode` de la DLL avec les données d’entrée.
+3. Le wrapper appelle la fonction `Encode` de la DLL avec les données d'entrée.
 4. La DLL construit la trame :  
    `[MAGIC][VERSION][TYPE][LENGTH][TIMESTAMP][PAYLOAD]`
-5. La DLL calcule la somme **JCS32** sur l’ensemble de la trame.
-6. La DLL ajoute la somme (8 octets) et retourne un pointeur vers la trame finale.
-7. Le wrapper copie les données dans un `Vec<u8>` Rust et appelle `free_buffer()`.
-8. L’application Rust reçoit un `Vec<u8>` prêt à être envoyé sur le réseau.
+5. La DLL calcule la somme de contrôle **JCS32** sur l'ensemble de la trame.
+6. La DLL ajoute la somme de contrôle (8 octets) et retourne un pointeur vers la trame finale.
+7. Le wrapper copie les données de la trame dans un `Vec<u8>` Rust et appelle `free_buffer()`.
+8. L'application Rust obtient un `Vec<u8>` propre prêt à être envoyé sur le réseau.
 
 ### Étape par étape (décodage)
 
-1. L’application Rust appelle `decode(&octets_recus)`.
+1. L'application Rust appelle `decode(&octets_recus)`.
 2. Le wrapper transmet les octets bruts à la fonction `Decode` de la DLL.
 3. La DLL recalcule JCS32 sur la trame (sans les 8 derniers octets).
-4. Si les sommes correspondent, la DLL extrait la CHARGE UTILE et la retourne.
+4. Si les sommes de contrôle correspondent, la DLL extrait la CHARGE UTILE et la retourne.
 5. Le wrapper copie la charge utile dans une `String` Rust et libère le tampon de la DLL.
-6. L’application Rust obtient le message original.
+6. L'application Rust obtient le message original.
 
-Cette architecture maintient la **logique centrale du protocole** dans un seul endroit (la DLL), tout en permettant à **n’importe quel langage** de l’utiliser via une fine couche d’adaptation. Le wrapper Rust n’est qu’un exemple – la même DLL peut être appelée depuis C++, Python, ou tout langage supportant FFI.
+Cette architecture maintient la **logique centrale du protocole** dans un seul endroit (la DLL), tout en permettant à **n'importe quel langage** de l'utiliser via une fine couche d'adaptation. Le wrapper Rust n'est qu'un exemple – la même DLL peut être appelée depuis C++, Python ou tout langage disposant d'un support FFI.
 
 ---
 
@@ -203,11 +264,70 @@ Cette architecture maintient la **logique centrale du protocole** dans un seul e
 
 CPMS a été implémenté **de zéro** en **Rust** et **C++**.
 
-- Une **DLL partagée** contient la logique centrale : encodage, décodage des trames, somme JCS32, et obfuscation optionnelle des données.
-- Le **wrapper Rust** utilise l’interface FFI (`libloading` ou `LoadLibrary` direct) pour appeler les fonctions de la DLL.
-- Le code **C++** peut utiliser nativement la même DLL.
+- Une **DLL partagée** contient la logique centrale : encodage, décodage des trames, somme de contrôle JCS32 et obfuscation optionnelle des données.
+- Le **wrapper Rust** utilise FFI (`libloading` ou `LoadLibrary` direct) pour appeler les fonctions de la DLL.
+- Le **côté C++** peut utiliser la même DLL nativement.
 
-Ainsi, le même protocole peut tourner aussi bien dans des applications haut niveau (interface Rust, outils en ligne de commande) que dans des systèmes bas niveau (serveurs C++, dispositifs embarqués, passerelles radio).
+Cela permet au même protocole de fonctionner à la fois dans des applications haut niveau (interface Rust, outils en ligne de commande) et dans des systèmes bas niveau (serveurs C++, dispositifs embarqués, passerelles radio).
+
+---
+
+## État actuel
+
+### V1 (Trame historique) – TERMINÉE ✅
+
+- Format de trame : `["MS" 2b][Version 1b][Type 1b][Payload Xb]`
+- Encodage/décodage basique dans la DLL C++
+- Wrapper Rust utilisant FFI (`libloading`)
+- Communication croisée validée (Rust ↔ C++)
+
+### Wrapper V1 (Rust) – TERMINÉ ✅
+
+- `encode()` retourne `Vec<u8>`
+- `decode(&[u8])` retourne `Result<String>`
+- Gestion de la mémoire via `free_buffer()`
+- Gestion précoce des erreurs avec le type `Result`
+
+### JCS32 – EN COURS 🚧
+
+- Algorithme implémenté dans la DLL C++
+- Retourne une somme de contrôle de 8 octets
+- Intégration avec la trame V2 en attente
+- Mise à jour du wrapper Rust planifiée
+
+### Trame V2 – EN COURS 🚧
+
+**Nouveau format (V2) :**
+
+`["CPMS" 4b][Version 1b][Type 1b][Length 4b][Payload Xb][Checksum 8b]`
+
+| Champ     | Taille | Description                                |
+|-----------|--------|--------------------------------------------|
+| MAGIC     | 4b     | Signature fixe "CPMS"                      |
+| VERSION   | 1b     | Version du protocole (0x02 pour V2)        |
+| TYPE      | 1b     | Type de message (1=Texte, 2=Fichier, ...)  |
+| LENGTH    | 4b     | Taille de la charge utile en octets        |
+| PAYLOAD   | Xb     | Données réelles (texte, fragment, etc.)    |
+| CHECKSUM  | 8b     | Vérification d'intégrité (JCS32)           |
+
+**Diagramme de la trame V2 :**
+
+<img width="1781" height="367" alt="image" src="images/diagrame_trame_v2.png" />
+
+**Améliorations par rapport à V1 :**
+
+- Magic étendu à 4 octets : `"CPMS"`
+- Champ `Length` explicite – plus d'ambiguïté sur la charge utile
+- Champ `Checksum` étendu à 8 octets – intégrité renforcée
+- Champ Version prêt pour les évolutions futures
+
+### Prochaines étapes
+
+1. Mettre à jour la DLL C++ pour supporter la trame V2 (encodage/décodage avec Length + Checksum 8b)
+2. Adapter le wrapper Rust pour gérer V2 (analyser les nouveaux champs, valider JCS32)
+3. Test croisé (encodage C++ → décodage Rust, et inversement)
+4. Client/serveur TCP simple utilisant le wrapper V2
+5. Chat bout‑en‑bout sur le réseau local
 
 ---
 
@@ -215,9 +335,9 @@ Ainsi, le même protocole peut tourner aussi bien dans des applications haut niv
 
 Une phrase. Une conviction.
 
-> **Tes données, tes règles. Ton réseau, ton format.**
+> **Vos données, vos règles. Votre réseau, votre format.**
 
-Pas de fioritures. Pas de couches inutiles. Pas de télémétrie cachée.  
+Pas de gonflement inutile. Pas de couches superflues. Pas de télémétrie cachée.  
 Juste un canal de communication propre, contrôlé et vérifiable.
 
-CPMS n’est pas un produit. C’est une base.
+CPMS n'est pas un produit. C'est une fondation.
