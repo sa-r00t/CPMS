@@ -84,7 +84,7 @@ pub fn encode(content: &str) -> Vec<u8> {
             slice.to_vec();
 
 
-        free_buffer(encoded.ptr);
+        free_buffer(encoded.ptr); // meilleure gestion de la mémoire, on libère le buffer après utilisation la ou la v1 laissait le buffer alloué (memory leak)
 
         result
     }
